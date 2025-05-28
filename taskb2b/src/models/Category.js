@@ -19,7 +19,7 @@ const categorySchema = new mongoose.Schema({
       default: 'string'
     },
     required: Boolean,
-    options: [String] // For predefined values if any
+    options: [String] 
   }]
 }, {
   timestamps: true

@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic';
 import { Suspense } from 'react';
 import LoadingSkeletons from '../components/LoadingSkeletons';
 
-// Dynamically import client components
+
 const SearchBar = dynamic(() => import('../components/SearchBar'), {
   loading: () => <div className="h-12 bg-gray-100 rounded animate-pulse" />
 });

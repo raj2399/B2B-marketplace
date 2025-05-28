@@ -1,0 +1,44 @@
+1. Intent Extraction Strategy
+ a. Scalable Pipeline for Intent Extraction:
+ To process a query like "running shoes size 9 red under Rs2,000 in Mumbai", I would use a
+ combination of machine learning and rule-based techniques:- Preprocessing: Begin by normalizing the text (e.g., lowercasing, handling punctuation), and use
+ tokenization to split it into key components.- Named Entity Recognition (NER): A model like DistilBERT fine-tuned on e-commerce queries
+ identifies key entities such as:
+  - Product: "running shoes"
+  - Size: "size 9"
+  - Color: "red"
+  - Price: "under Rs2000"
+  - Location: "Mumbai"- Rules + Regex: Use regular expressions to capture patterns like "under Rs", "size <number>", or
+ "in <city>". Example: r"under\sRs?(\d+)" for price extraction.- Post-processing: The identified components are transformed into structured filters:
+  {category: shoes, size: 9, color: red, price <= 2000, location: Mumbai}- Libraries: Utilize spaCy for part-of-speech tagging, HuggingFace for NER, and Python for
+ orchestration.
+ b. Fallback Strategy:
+ When the system is not confident (e.g., unsure if "red" refers to color or brand), I would:
+- Run the query with the high-confidence filters (e.g., size, price).- Prompt the user for clarification, e.g., "Did you mean red as a color or brand?".- Use user interactions (clicks, refinements) as feedback to improve the system over time.- Log uncertain cases for human review to improve training data.
+ This hybrid approach ensures scalability and flexibility while handling ambiguity through user
+ interaction.
+
+ 
+ 2. Flexible Schema for Category-Specific Attributes
+ a. Schema Choice:
+ To accommodate dynamic product attributes, such as "Energy Rating" for ACs or "Heel Height" for
+ shoes, I would use a hybrid model:- Core Product Info (Relational): Store core fields like product_id, name, and price in a relational
+ database (e.g., PostgreSQL).- Flexible Attributes (Document Store): Use a document store or a JSONB column for
+ category-specific attributes, allowing quick updates without schema migrations. Example JSON:
+  {
+  }
+    "Energy Rating": "5 Star",
+    "Warranty": "2 Years",
+    "Colour": "White"- Why Hybrid?
+  - The relational database stores stable product data, and JSONB allows for flexible, on-the-fly
+ attribute updates.
+  - Merchandisers can easily add new attributes without requiring schema changes.
+  - This setup is scalable as it separates static and dynamic data concerns.
+ b. Support for Fast Multi-Attribute Filtering:- Indexing: JSONB fields can be indexed with GIN indexes in PostgreSQL for fast filtering. For
+ larger-scale operations, tools like Elasticsearch offer automatic indexing of dynamic attributes.- Context-Aware Facets: The frontend can show relevant filters based on the product category. For
+ instance, "Resolution" for TVs or "Sole Material" for shoes, using indexed attributes to retrieve
+ available filters.- Existence Checks: The system quickly checks if attributes like "Energy Rating" are available for
+ products to ensure accurate filtering.- Scalability: This approach supports rapid scaling as new categories and attributes are added,
+ similar to how large e-commerce platforms like Amazon evolve their catalogs.
+ This hybrid schema allows for flexibility, scalability, and fast filtering, offering a balance between
+ relational integrity and the flexibility of document-based attributes

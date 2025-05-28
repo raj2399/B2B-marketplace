@@ -2,7 +2,6 @@ export async function GET(request) {
   try {
     const { searchParams } = new URL(request.url);
     
-    // Forward all search parameters to the backend API
     const backendUrl = 'http://localhost:5000/api/search';
     const url = searchParams.toString() 
       ? `${backendUrl}?${searchParams.toString()}`
@@ -14,7 +13,6 @@ export async function GET(request) {
       throw new Error(`Backend API request failed: ${response.status}`);
     }
 
-    // Get the data from backend and return it directly
     const data = await response.json();
     return Response.json(data);
 
